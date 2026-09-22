@@ -1,0 +1,18 @@
+dbt_prefect_starter:
+  outputs:
+    dev:
+      type: duckdb
+      path: "./local_warehouse.duckdb"
+      schema: main
+      threads: 8
+      extensions:
+        - httpfs
+        - excel
+      settings:
+        threads: 8
+        max_memory: '16GB'
+        memory_limit: '8GB'
+        preserve_insertion_order: false
+        s3_use_ssl: true
+
+  target: dev

@@ -1,0 +1,26 @@
+# dbt
+target/
+dbt-outputs/dbt_packages/
+logs/
+local_warehouse.duckdb
+package-lock.yml
+.user.yml
+.env
+
+# Python cache
+__pycache__
+
+# Python environments
+.pixi/
+pixi.lock
+
+# documentation
+/.quarto/
+_site/
+
+# Prefect tests using pytest
+.pytest_cache/
+**/test-logs/*
+!**/test-logs/.gitkeep
+
+**/*.quarto_ipynb

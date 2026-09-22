@@ -1,0 +1,23 @@
+dbt_prefect_starter:
+  outputs:
+    dev:
+      type: duckdb
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT_LOCATION') }}"
+      user: "{{ env_var('SNOWFLAKE_USER_NAME') }}"
+      password: "{{ env_var('SNOWFLAKE_USER_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+
+    ci:
+      type: duckdb
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT_LOCATION') }}"
+      user: "{{ env_var('SNOWFLAKE_USER_NAME') }}"
+      password: "{{ env_var('SNOWFLAKE_USER_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+
+  target: ci

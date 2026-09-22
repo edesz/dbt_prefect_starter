@@ -1,0 +1,14 @@
+
+target/
+dbt-outputs/dbt_packages/
+logs/
+.env
+
+# Python cache
+__pycache__
+
+.tox/
+uv.lock
+
+/.quarto/
+_site/

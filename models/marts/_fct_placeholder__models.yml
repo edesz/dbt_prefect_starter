@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: _fct_placeholder
+    description: '{{ doc("fct_placeholder_description") }}'
+
+    data_tests:
+      - dbt_expectations.expect_table_columns_to_contain_set:
+          name: all_columns_must_exist
+          description: "Ensures intermediate model contains all columns in lowercase."
+          arguments:
+            column_list:
+              - 'id'
+            transform: lower
+
+    columns:
+      - name: id
+        description: '{{ doc("fct_placeholder_id") }}'
+        data_tests:
+          - unique:
+              name: id_must_be_unique
+              description: "Ensures each record has a unique row identifier."
+          - not_null:
+              name: id_must_not_be_null
+              description: "Ensures every record has a row identifier."
+          - accepted_values:
+              arguments:
+                values: [1]

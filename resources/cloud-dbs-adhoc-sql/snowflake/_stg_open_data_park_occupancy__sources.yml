@@ -1,0 +1,120 @@
+version: 2
+
+sources:
+  - name: tor_open_data_parking_lot_usage
+    description: "Public parking lot occupancies in city of Toronto."
+    schema: main
+    freshness:
+      warn_after: {count: 95, period: day}
+      error_after: {count: 105, period: day}
+    loaded_at_field: _loaded_at
+    schema: raw_schema
+    loader: S3
+
+    tables:
+      - name: parking_lot_occupancies
+        description: "Raw parking lot occupancies."
+
+        external:
+          location: "@park_occupy_db.raw_schema.raw_park_occupancy_stage"
+          file_format: |
+            (
+              type = 'CSV'
+              skip_header = 1
+              field_delimiter = ','
+              field_optionally_enclosed_by = '"'
+            )
+          pattern: '.*\.csv'
+
+        data_tests:
+          - dbt_expectations.expect_table_columns_to_contain_set:
+              name: all_columns_must_exist
+              description: "Ensures source data contains all expected columns."
+              arguments:
+                column_list:
+                  - '_id'
+                  - 'Year'
+                  - 'Quarter'
+                  - 'Car Park Number'
+                  - 'Car Park Location'
+                  - 'Total Available Spaces'
+                  - 'Average Daily Peak Occupancy %'
+
+        columns:
+          - name: _id
+            description: "Unique row identifier for Open Data database"
+            data_tests:
+              - unique:
+                  name: row_id_must_be_unique
+                  description: "Ensures each occupancy record has a unique row identifier."
+              - not_null:
+                  name: row_id_must_not_be_null
+                  description: "Ensures every occupancy record has a row identifier."
+          - name: "Car Park Number"
+            description: "Unique identifier for each parking lot."
+            data_tests:
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  name: car_park_number_must_start_with_CP
+                  description: "Ensures the car park number starts with CP."
+                  arguments:
+                    column_name: '"Car Park Number"'
+                    regex: "^CP"
+          - name: Car Park Location
+            description: "Address of the parking lot."
+            data_tests:
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  name: car_park_location_must_be_between_zero_or_higher
+                  description: "Ensures the car park street address is valid."
+                  arguments:
+                    column_name: '"Car Park Location"'
+                    regex: "^[A-Za-z0-9\\s\\.,#''-]*$"
+                    flags: 'i'
+                    config:
+                      warn_if: ">50"
+                      error_if: ">5"
+          - name: Total Available Spaces
+            description: "Number of spaces available for parking."
+            data_tests:
+              - dbt_expectations.expect_column_values_to_be_between:
+                  name: total_available_spaces_must_be_between_zero_or_higher
+                  description: >
+                      Ensures the total available parking spots is zero or positive.
+                  arguments:
+                    column_name: '"Total Available Spaces"'
+                    min_value: 0
+          - name: "Average Daily Peak Occupancy %"
+            description: >
+                Average daily peak occupancy ratio of highest number of
+                daily transactions to capacity averaged over reporting period.
+            data_tests:
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  name: avg_daily_peak_occupancy_must_be_int_percentage_as_a_string
+                  description: >
+                      Ensures the average peak daily occupancy rate is a string
+                      containing an integer and a percentage sign with no space
+                      in between.
+                  arguments:
+                    column_name: '"Average Daily Peak Occupancy %"'
+                    regex: '^\d+%$'
+                    is_raw: true
+          - name: Year
+            description: Year of the occupancy rate record.
+            data_tests:
+              - dbt_expectations.expect_column_values_to_be_between:
+                  name: year_must_be_2025_or_later
+                  description: "Ensures the year is 2025 or later."
+                  arguments:
+                    min_value: 2025
+          - name: Quarter
+            description: Quarter of the occupancy rate record.
+            data:
+              - dbt_expectations.expect_column_values_to_be_in_set:
+                  name: quarter_must_be_expected_binary
+                  description: "Ensures the quarter is one of Q1, Q2, Q3 or Q4."
+                  arguments:
+                    value_set:
+                      - "Q1"
+                      - "Q2"
+                      - "Q3"
+                      - "Q4"
+                    quote_values: true

@@ -1,0 +1,38 @@
+[run]
+source =
+  src/tests
+omit =
+  src/__init__.py
+  src/*/__init__.py
+  src/tests/conftest.py
+branch = True
+
+[html]
+directory = src/tests/test-logs/htmlcov
+
+[xml]
+output = src/tests/test-logs/coverage.xml
+
+[report]
+show_missing = True
+skip_covered = False
+# fail_under = 90.0
+
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+
+ignore_errors = True
