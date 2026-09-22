@@ -1,4 +1,4 @@
-# dbt Starter with Prefect
+# dbt Starter with Prefect Cloud
 
 [![CI](https://github.com/edesz/dbt_prefect_starter/actions/workflows/main.yml/badge.svg)](https://github.com/edesz/dbt_prefect_starter/actions/workflows/main.yml) ![Static Badge](https://img.shields.io/badge/MIT-License?style=for-the-badge&label=LICENSE&color=%2326ED46) ![Python](https://img.shields.io/badge/python-%233670A0.svg?style=for-the-badge&logo=python&logoColor=ffdd54) ![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg) ![GitHub stars](https://img.shields.io/github/stars/edesz/dbt_prefect_starter) 
 
@@ -20,30 +20,71 @@ The stack used is
 4. [Make](https://www.gnu.org/software/make/) ([installation](https://www.gnu.org/software/make/#download))
 5. Create an account on [Prefect Cloud](https://www.prefect.io/prefect/cloud)
 
-### Environment Variables
+### Prefect Cloud Connection Profile
 
-Get the [Prefect API settings](https://docs.prefect.io/v3/how-to-guides/cloud/connect-to-cloud#manually-configure-prefect-api-settings)
+When using Prefect Cloud to execute flow runs, create and use a profile specifically for Cloud, which contains your `PREFECT_API_URL` and `PREFECT_API_KEY` in order to authenticate with the Prefect Cloud API using an API key.
 
-#### Local
+First, get the [Prefect API settings from your Prefect Cloud account](https://docs.prefect.io/v3/how-to-guides/cloud/connect-to-cloud#manually-configure-prefect-api-settings) by following the steps below
 
-Configure `~/.prefect/profiles.yml` as follows
+1. Get your Prefect Cloud account ID
+   - log in to your [Prefect Cloud Dashboard](https://app.prefect.cloud/auth/sign-in)
+   - look at the URL in your browser's address bar. It will follow this structure: `https://prefect.cloud`
+   - the string of text directly after `/account/` is your Prefect Account ID
+2. Get the Prefect Cloud workspace ID. When logged into the Prefect Cloud UI and viewing your workspace dashboard, the workspace ID is embedded directly in the address bar. Look for the alphanumeric string at the end of the URL
+   ```text
+   https://app.prefect.cloud/account/[YOUR-ACCOUNT-ID]/workspace/[YOUR-WORKSPACE-ID]/dashboard
+   ```
 
-```yaml
+   where `[YOUR-ACCOUNT-ID]` is your Prefect Account ID from the previous step
+3. Assemble the Prefect Cloud URL, which is the same as above but without the `/dashboard` suffix
+   ```text
+   https://app.prefect.cloud/account/[YOUR-ACCOUNT-ID]/workspace/[YOUR-WORKSPACE-ID]
+   ```
+4. [Create a Prefect Cloud API key](https://docs.prefect.io/v3/how-to-guides/cloud/manage-users/api-keys#create-an-api-key)
+   - go to the Prefect Cloud Login and sign in
+   - slick on your Profile Avatar or image in the bottom-left corner
+   - select *Settings* from the menu
+   - click on API Keys in the settings sidebar
+   - click the *+ Create API Key* (or *Generate API Key*) button
+   - enter a name for the key and choose an expiration date (e.g. 30 days, 90 days, or never)
+   - click *Create* and copy the key immediately since it will only be shown to you once
+
+Next, create a file at `~/.prefect/profiles.toml` with the two environment variables from above as follows
+
+```toml
 active = "cloud"
 
 [profiles.default]
 
 [profiles.local]
-PREFECT_API_URL = "your-Prefect-Server-url-here"
 
 [profiles.cloud]
-PREFECT_API_KEY = "your-Prefect-Cloud-api-key-here"
-PREFECT_API_URL = "your-Prefect-Cloud-url-here"
+PREFECT_API_KEY = "<your-Prefect-Cloud-api-key-here>"
+PREFECT_API_URL = "<your-Prefect-Cloud-url-here>"
 ```
 
 It is important to ensure `active` is set to `"cloud"` in order to use your Prefect Cloud account.
 
-#### Repository
+Note that a local profile is only helpful if you also want the convenience of easily switching back to a local instance (like *http://127.0.0.1:4200/api*) on your machine. If you never run Prefect locally, you don't need it. Here, we are using Prefect Cloud so we do not need the following
+
+```toml
+[profiles.local]
+PREFECT_API_URL = "<your-Prefect-Server-url-here>"
+```
+
+## Usage
+
+### Fork Repository
+
+Navigate to the repository on GitHub and click the *Fork* button in the top-right corner.
+
+### Clone Repository
+
+Copy your new fork's URL and clone it locally
+
+```bash
+git clone https://github.com/<your-github-user-name>/dbt_prefect_starter.git
+```
 
 Configure the Prefect API settings as Secrets on your Github repository
 
@@ -57,17 +98,13 @@ and
 PREFECT_API_KEY
 ```
 
-## Usage
+### Change into Project Directory
 
-### Clone Repo
+Change into the root directory of the cloned repository. All commands are run from this location.
 
-```bash
-git clone https://github.com/edesz/dbt_prefect_starter.git
-```
+### Orchetrate dbt Workflow with Prefect Cloud
 
-### Orchetrate dbt Workflow
-
-Run the following dbt commands in order
+Use Prefect to run the following dbt commands in order
 
 ```bash
 dbt debug
@@ -77,7 +114,7 @@ dbt test
 dbt docs generate
 ```
 
-by running the following commands from the root directory of the project
+by running the following
 
 ```bash
 make prefect-dbt
@@ -102,6 +139,7 @@ Available rules:
 dbt-cmd             Run adhoc dbt command 
 lint                Run lint checks manually 
 pixi-help           Show all available pixi commands 
+pixi-self-update    Update pixi 
 pixi-upgrade        Upgrade package versions with pixi 
 prefect-config-view Show active configuration settings for Prefect 
 prefect-dbt         Run dbt commands with Prefect 
@@ -138,11 +176,17 @@ For convenience, Pixi tasks defined in [`pyresources/py-env-tools/pixi/pyproject
 
 [`tox`](https://tox.wiki/en/stable/) can be used instead of Pixi to manage Python environments. By using the [`tox-uv` plugin](https://github.com/tox-dev/tox-uv#tox-uv), `tox` can be used with [`uv`](https://docs.astral.sh/uv/) in order to realise performance improvements compared to the default `virtualenv`.
 
-tox [environments](https://tox.wiki/en/stable/tutorial/getting-started.html#environment-settings) and [commands](https://tox.wiki/en/stable/tutorial/getting-started.html#understanding-the-configuration) are defined in [`tox.ini`](https://tox.wiki/en/stable/reference/config.html#discovery-and-file-types)
+tox [environments](https://tox.wiki/en/stable/tutorial/getting-started.html#environment-settings) and [commands](https://tox.wiki/en/stable/tutorial/getting-started.html#understanding-the-configuration) are defined in [`tox.toml`](https://tox.wiki/en/stable/reference/config.html#discovery-and-file-types) found at [`pyresources/tox/using-uv/TOML/tox.toml`](./pyresources/py-env-tools/tox/using-uv/tox.toml).
 
-As with Pixi, tox commands defined in [`pyresources/tox/tox.ini`](./pyresources/py-env-tools/tox/tox.ini) can be called using the `Makefile` at [`pyresources/py-env-tools/tox/Makefile`](./resources/py-env-tools/tox/Makefile).
+Additional files required when using tox are
 
-Currently, `tox` is configured using the INI format, which has been deprecated in favour of the TOML format ([link](https://tox.wiki/en/stable/reference/config.html#discovery-and-file-types)). Future work should translate [`pyresources/py-env-tools/tox/tox.ini`](./pyresources/py-env-tools/tox/tox.ini) into the TOML format.
+1. [`pyresources/py-env-tools/tox/using-uv/.gitignore`](./resources/py-env-tools/tox/using-uv/.gitignore)
+2. [`pyresources/py-env-tools/tox/using-uv/pyproject.toml`](./resources/py-env-tools/tox/using-uv/pyproject.toml)
+3. [`pyresources/py-env-tools/tox/using-uv/TOML/Makefile`](./resources/py-env-tools/tox/using-uv/TOML/Makefile)
+
+These three files should replace the corresponding files in the root directory of the project since they support Pixi by default.
+
+Currently, `tox` is configured using both the INI format, which has been deprecated, and the [newer TOML format](https://tox.wiki/en/stable/reference/config.html#discovery-and-file-types). If switching to the `tox` approach, use the TOML format only.
 </details>
 </details>
 
