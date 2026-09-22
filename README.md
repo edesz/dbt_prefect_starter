@@ -1,5 +1,7 @@
 # dbt Starter with Prefect
 
+[![CI](https://github.com/edesz/dbt_prefect_starter/actions/workflows/main.yml/badge.svg)](https://github.com/edesz/dbt_prefect_starter/actions/workflows/main.yml) ![Static Badge](https://img.shields.io/badge/MIT-License?style=for-the-badge&label=LICENSE&color=%2326ED46) ![Python](https://img.shields.io/badge/python-%233670A0.svg?style=for-the-badge&logo=python&logoColor=ffdd54) ![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg) ![GitHub stars](https://img.shields.io/github/stars/edesz/dbt_prefect_starter) 
+
 This project is a starter template for [dbt](https://www.getdbt.com/) data modeling.
 
 The stack used is
@@ -38,6 +40,8 @@ PREFECT_API_URL = "your-Prefect-Server-url-here"
 PREFECT_API_KEY = "your-Prefect-Cloud-api-key-here"
 PREFECT_API_URL = "your-Prefect-Cloud-url-here"
 ```
+
+It is important to ensure `active` is set to `"cloud"` in order to use your Prefect Cloud account.
 
 #### Repository
 
