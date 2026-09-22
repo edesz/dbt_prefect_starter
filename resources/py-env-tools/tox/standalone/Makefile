@@ -10,37 +10,37 @@
 lint:
 	@echo "+ $@"
 	@if [ ! -d .git ]; then git init && git add .; fi;
-	@tox -e lint
+	@tox -e py313-lint
 .PHONY: lint
 
 ## Run adhoc dbt command
 dbt-cmd:
 	@echo "+ $@"
-	@tox -e py314dbt -- "debug"
+	@tox -e py313-dbt -- "debug"
 .PHONY: dbt-cmd
 
 ## Run dbt commands with Prefect
 prefect-dbt:
 	@echo "+ $@"
-	@tox -e py314orchestration -- "debug,deps,run,test,docs generate,clean"
+	@tox -e py313-orchestration -- "debug,deps,run,test,docs generate"
 .PHONY: prefect-dbt
 
 ## Run ad-hoc SQL queries with DuckDB
 run-adhoc-query:
 	@echo "+ $@"
-	@tox -e py314adhocsql -- "analyses/check_parking_occupancy_records.sql"
+	@tox -e py313-adhocsql -- "analyses/check_parking_occupancy_records.sql"
 .PHONY: run-adhoc-query
 
-## Upgrade uv
-uv-install-upgrade:
+## Run unit tests on Prefect tasks and flows with PyTest
+tests:
 	@echo "+ $@"
-	@pip3 install --upgrade uv
-.PHONY: uv-install-upgrade
+	@tox -e py313-unittests
+.PHONY: tests
 
 ## Use uv to pin Python version for working directory only
 uv-pin-python:
 	@echo "+ $@"
-	@uv python pin 3.14.7
+	@uv python pin 3.13.15
 .PHONY: uv-pin-python
 
 ## Use uv to install tox, through the tox-uv plugin
@@ -60,6 +60,12 @@ tox-help:
 	@echo "+ $@"
 	@tox list
 .PHONY: tox-help
+
+## Install and Upgrade uv
+uv-install-upgrade:
+	@echo "+ $@"
+	@pip3 install --upgrade uv
+.PHONY: uv-install-upgrade
 
 #################################################################################
 # PROJECT RULES                                                                 #

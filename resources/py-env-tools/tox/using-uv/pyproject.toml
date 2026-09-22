@@ -1,0 +1,35 @@
+[project]
+name = "dbt-prefect-starter"
+version = "0.1.0"
+description = "Starter dbt project using Prefect for orchestration."
+authors = [{name = "edesz"}]
+requires-python = "== 3.13.15"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+base = [
+    "pyarrow",
+    "polars"
+]
+dbt = [
+    "dbt-core",
+    "duckdb",
+    "dbt-duckdb",
+    "sqlfluff"
+]
+prefectdbt = [
+    "prefect",
+    "pydantic",
+    "typer",
+    "prefect-dbt"
+]
+myenv = [
+    "pytest",
+    "coverage",
+    "pytest-html"
+]
+lint = [
+    "pre-commit"
+]

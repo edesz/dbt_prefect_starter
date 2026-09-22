@@ -6,66 +6,72 @@
 # COMMANDS                                                                      #
 #################################################################################
 
-
-
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
 ## Run lint checks manually
 lint:
 	@echo "+ $@"
 	@if [ ! -d .git ]; then git init && git add .; fi;
-	@pixi run lint
+	@tox -e py313-lint
 .PHONY: lint
 
 ## Run adhoc dbt command
 dbt-cmd:
 	@echo "+ $@"
-	@pixi run dbt-cmd "debug"
+	@tox -e py313-dbt -- "debug"
 .PHONY: dbt-cmd
-
-## Show active configuration settings for Prefect
-prefect-config-view:
-	@echo "+ $@"
-	@pixi run prefect-adhoc-command config view
-.PHONY: prefect-config-view
 
 ## Run dbt commands with Prefect
 prefect-dbt:
 	@echo "+ $@"
-	@pixi run prefect-dbt "debug,deps,run,test,docs generate"
+	@tox -e py313-orchestration -- "debug,deps,run,test,docs generate"
 .PHONY: prefect-dbt
 
-## Run ad-hoc SQL query
+## Run ad-hoc SQL queries with DuckDB
 run-adhoc-query:
 	@echo "+ $@"
-	@pixi run adhocsql "analyses/check_parking_occupancy_records.sql"
+	@tox -e py313-adhocsql -- "analyses/check_parking_occupancy_records.sql"
 .PHONY: run-adhoc-query
 
 ## Run unit tests on Prefect tasks and flows with PyTest
 tests:
 	@echo "+ $@"
-	@pixi run test
+	@tox -e py313-unittests
 .PHONY: tests
 
-## Upgrade package versions with pixi
-pixi-upgrade:
+## Use uv to pin Python version for working directory only
+uv-pin-python:
 	@echo "+ $@"
-	@pixi upgrade
-.PHONY: pixi-upgrade
+	@uv python pin 3.13.15
+.PHONY: uv-pin-python
 
-## Show all available pixi commands
-pixi-help:
+## Use uv to install tox, through the tox-uv plugin
+uv-install-tox:
 	@echo "+ $@"
-	@pixi task list
-.PHONY: pixi-help
+	@uv tool install tox --with tox-uv
+.PHONY: uv-install-tox
 
-## Update pixi
-pixi-self-update:
+## Use uv to upgrade tox
+uv-upgrade-tox:
 	@echo "+ $@"
-	@pixi self-update
-.PHONY: pixi-self-update
+	@uv tool upgrade tox
+.PHONY: uv-upgrade-tox
+
+## Show all available tox commands
+tox-help:
+	@echo "+ $@"
+	@tox list
+.PHONY: tox-help
+
+## Install and Upgrade uv
+uv-install-upgrade:
+	@echo "+ $@"
+	@pip3 install --upgrade uv
+.PHONY: uv-install-upgrade
+
+#################################################################################
+# PROJECT RULES                                                                 #
+#################################################################################
+
+
 
 #################################################################################
 # Self Documenting Commands                                                     #

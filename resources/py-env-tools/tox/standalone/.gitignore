@@ -11,10 +11,8 @@ package-lock.yml
 __pycache__
 
 # Python environments
-.pixi/
-pixi.lock
+.tox/
 
 # Prefect tests using pytest
-.pytest_cache/
 **/test-logs/*
 !**/test-logs/.gitkeep

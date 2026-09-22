@@ -4,7 +4,7 @@
 name = "dbt-prefect-starter"
 version = "0.1.0"
 description = "Starter dbt project using Prefect for orchestration."
-authors = [{name = "edesz"}]
+authors = [{ name = "edesz" }]
 requires-python = "== 3.13.15"
 
 [tool.pixi.workspace]
@@ -18,33 +18,30 @@ where = ["src"]
 
 [tool.pixi.feature.dbt.pypi-dependencies]
 # create a dbt feature
-dbt-oss = ">=2.0.5, <3"
-duckdb = ">=1.5.5, <2"
-dbt-duckdb = ">=1.11.0, <2"
-sqlfluff = ">=4.3.0, <5"
-pyarrow = ">=25.0.1, <26"
-polars = ">=1.44.2, <2"
+dbt-core = "*"
+duckdb = "*"
+dbt-duckdb = "*"
+sqlfluff = "*"
+pyarrow = "*"
+polars = "*"
 
 [tool.pixi.feature.orchestration.pypi-dependencies]
 # create a prefect dbt orchestration feature
-python-dotenv = ">=1.2.3, <2"
-prefect = ">=3.8.6, <4"
-pydantic = ">=2.13.5, <3"
-typer = ">=0.27.2, <0.28"
-prefect-dbt = ">=0.7.25, <0.8"
+python-dotenv = "*"
+prefect = "*"
+pydantic = "*"
+typer = "*"
+prefect-dbt = "*"
 
 [tool.pixi.feature.lint.pypi-dependencies]
 # create a lint feature
-pre-commit = ">=4.6.2, <5"
+pre-commit = "*"
 
 [tool.pixi.feature.test.pypi-dependencies]
 # create a test feature
-pytest = ">=9.1.1, <10"
-coverage = ">=7.16.1, <8"
-pytest-html = ">=4.2.0, <5"
-
-[tool.pixi.feature.website.dependencies]
-# create an (empty) website feature
+pytest = "*"
+coverage = "*"
+pytest-html = "*"
 
 # ========= Specify non-essential dependencies in environments ========
 
@@ -52,10 +49,18 @@ pytest-html = ">=4.2.0, <5"
 # create environments that use features created above
 default = { solve-group = "default" }
 dbt = { features = ["default", "dbt"], solve-group = "dbt" }
-prefectdbt = { features = ["default", "dbt", "orchestration"], solve-group = "prefectdbt" }
+prefectdbt = { features = [
+    "default",
+    "dbt",
+    "orchestration",
+], solve-group = "prefectdbt" }
 lint = { features = ["default", "dbt", "lint"], solve-group = "lint" }
-test = { features = ["default", "dbt", "orchestration", "test"], solve-group = "test" }
-docs = { features = ["website"], no-default-feature = true }
+test = { features = [
+    "default",
+    "dbt",
+    "orchestration",
+    "test",
+], solve-group = "test" }
 
 # ========================== Define tasks (shortcuts) ==========================
 
@@ -63,13 +68,17 @@ docs = { features = ["website"], no-default-feature = true }
 # run development tasks for the prefect-dbt feature
 prefect-dbt = { cmd = """
     python3 dbt_orchestrator.py --commands "{{ commands }}"
-    """, depends-on = [], description="""\
+    """, depends-on = [
+], description = """\
     Run dbt commands with Prefect\
-    """, args = ["commands"], env = { DBT_PROFILES_DIR = "." }, cwd = ".", default-environment = "prefectdbt" }
+    """, args = [
+    "commands",
+], env = { DBT_PROFILES_DIR = "." }, cwd = ".", default-environment = "prefectdbt" }
 # run adhoc Prefect command
 prefect-adhoc-command = { cmd = """
     prefect
-    """, depends-on = [], description="""\
+    """, depends-on = [
+], description = """\
     Run Prefect command\
     """, cwd = ".", env = { DBT_PROFILES_DIR = "." }, default-environment = "prefectdbt" }
 
@@ -77,25 +86,30 @@ prefect-adhoc-command = { cmd = """
 # execute adhoc dbc command
 dbt-cmd = { cmd = """
     dbt {{ command }}
-    """, description="""\
+    """, description = """\
     Execute adhoc dbt command\
-    """, args = ["command"], cwd = ".", env = { DBT_PROFILES_DIR = "." }, default-environment = "dbt" }
+    """, args = [
+    "command",
+], cwd = ".", env = { DBT_PROFILES_DIR = "." }, default-environment = "dbt" }
 # run adhoc .sql script with data warehouse
 adhocsql = { cmd = """
     python run_sql_query.py "{{ script }}"
-    """, depends-on = [], description="""\
+    """, depends-on = [
+], description = """\
     Run an ad-hoc .sql script using the data warehouse\
-    """, args = ["script"], cwd = ".", env = { DBT_PROFILES_DIR = "." }, default-environment = "dbt" }
+    """, args = [
+    "script",
+], cwd = ".", env = { DBT_PROFILES_DIR = "." }, default-environment = "dbt" }
 
 [tool.pixi.feature.lint.tasks]
 # execute lint checks
 lint = { cmd = """
-    dbt deps
-    && dbt parse
-    && pre-commit autoupdate
-    && pre-commit install
-    && pre-commit run -v --all-files
-    """, description="""\
+    dbt deps &&
+    dbt parse &&
+    pre-commit autoupdate &&
+    pre-commit install &&
+    pre-commit run -v --all-files
+    """, description = """\
     Run code checks for the linting feature\
     """, cwd = ".", env = { DBT_PROFILES_DIR = "." }, default-environment = "lint" }
 
@@ -105,24 +119,6 @@ test = { cmd = """
     coverage run -m pytest &&
     coverage report -m &&
     coverage html && coverage xml
-    """, description="""\
+    """, description = """\
     Run unit tests with Pytest\
     """, default-environment = "test" }
-
-[tool.pixi.feature.website.tasks]
-# run tasks for the documentation feature
-quarto-preview = { cmd = """
-    quarto preview --no-browser
-    """, description="""\
-    Preview documentation with Quarto\
-    """, default-environment = "docs" }
-quarto-render = { cmd = """
-    quarto render
-    """, description="""\
-    Render documentation with Quarto\
-    """, default-environment = "docs" }
-quarto-publish-gh-pages = { cmd = """
-    quarto publish gh-pages
-    """, description="""\
-    Create Github Actions configuration for Quarto\
-    """, default-environment = "docs" }

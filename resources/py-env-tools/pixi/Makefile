@@ -61,6 +61,12 @@ pixi-help:
 	@pixi task list
 .PHONY: pixi-help
 
+## Update pixi
+pixi-self-update:
+	@echo "+ $@"
+	@pixi self-update
+.PHONY: pixi-self-update
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

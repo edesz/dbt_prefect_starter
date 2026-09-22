@@ -1,0 +1,136 @@
+requires = ["tox-uv"]
+
+env_list = [
+    { product = [
+        [
+            "dbt",
+            "orchestration",
+            "adhocsql",
+            "unittests",
+            "lint",
+        ],
+    ] },
+]
+
+[env_run_base]
+no_package = true
+runner = "uv-venv-lock-runner"
+platform = "linux"
+base_python_file = [".python-version"]
+
+set_env.DBT_SEND_ANONYMOUS_USAGE_STATS = "False"
+
+pass_env = ["*"]
+
+allowlist_externals = ["bash"]
+
+dependency_groups = [
+    { replace = "if", condition = "factor.dbt", then = [
+        "dbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.dbt", then = [
+        "base",
+    ], extend = true },
+    { replace = "if", condition = "factor.adhocsql", then = [
+        "base",
+    ], extend = true },
+    { replace = "if", condition = "factor.adhocsql", then = [
+        "dbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.orchestration", then = [
+        "dbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.orchestration", then = [
+        "prefectdbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.unittests", then = [
+        "dbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.unittests", then = [
+        "prefectdbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.unittests", then = [
+        "myenv",
+    ], extend = true },
+    { replace = "if", condition = "factor.lint", then = [
+        "dbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.lint", then = [
+        "lint",
+    ], extend = true },
+]
+
+commands = [
+    { replace = "if", condition = "factor.dbt", then = [
+        [
+            "dbt",
+            { replace = "posargs", extend = true },
+        ],
+    ], extend = true },
+
+    { replace = "if", condition = "factor.orchestration", then = [
+        [
+            "python3",
+            "dbt_orchestrator.py",
+            "--commands",
+            { replace = "posargs", extend = true },
+        ],
+    ], extend = true },
+
+    { replace = "if", condition = "factor.adhocsql", then = [
+        [
+            "python",
+            "run_sql_query.py",
+            { replace = "posargs", extend = true },
+        ],
+    ], extend = true },
+
+    { replace = "if", condition = "factor.unittests", then = [
+        [
+            "coverage",
+            "run",
+            "-m",
+            "pytest",
+        ],
+        [
+            "coverage",
+            "report",
+            "-m",
+        ],
+        [
+            "coverage",
+            "html",
+        ],
+        [
+            "coverage",
+            "xml",
+        ],
+    ], extend = true },
+
+    { replace = "if", condition = "factor.lint", then = [
+        [
+            "dbt",
+            "deps",
+        ],
+        [
+            "dbt",
+            "parse",
+        ],
+        [
+            "pre-commit",
+            "autoupdate",
+        ],
+        [
+            "pre-commit",
+            "install",
+        ],
+        [
+            "pre-commit",
+            "run",
+            "-v",
+            "--all-files",
+            "--show-diff-on-failure",
+            { replace = "posargs", extend = true },
+        ],
+    ], extend = true },
+]
