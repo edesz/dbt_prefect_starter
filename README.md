@@ -1,4 +1,4 @@
-# dbt Starter with Prefect and DuckDB
+# dbt Starter with Prefect
 
 This project is a starter template for [dbt](https://www.getdbt.com/) data modeling.
 
@@ -16,6 +16,42 @@ The stack used is
 2. [Pixi](https://pixi.prefix.dev/latest/) ([installation](https://pixi.prefix.dev/latest/installation/))
 3. [Git](https://git-scm.com/) ([installation](https://git-scm.com/install/))
 4. [Make](https://www.gnu.org/software/make/) ([installation](https://www.gnu.org/software/make/#download))
+5. Create an account on [Prefect Cloud](https://www.prefect.io/prefect/cloud)
+
+### Environment Variables
+
+Get the [Prefect API settings](https://docs.prefect.io/v3/how-to-guides/cloud/connect-to-cloud#manually-configure-prefect-api-settings)
+
+#### Local
+
+Configure `~/.prefect/profiles.yml` as follows
+
+```yaml
+active = "cloud"
+
+[profiles.default]
+
+[profiles.local]
+PREFECT_API_URL = "your-Prefect-Server-url-here"
+
+[profiles.cloud]
+PREFECT_API_KEY = "your-Prefect-Cloud-api-key-here"
+PREFECT_API_URL = "your-Prefect-Cloud-url-here"
+```
+
+#### Repository
+
+Configure the Prefect API settings as Secrets on your Github repository
+
+```text
+PREFECT_API_URL
+```
+
+and
+
+```text
+PREFECT_API_KEY
+```
 
 ## Usage
 
@@ -63,11 +99,10 @@ dbt-cmd             Run adhoc dbt command
 lint                Run lint checks manually 
 pixi-help           Show all available pixi commands 
 pixi-upgrade        Upgrade package versions with pixi 
+prefect-config-view Show active configuration settings for Prefect 
 prefect-dbt         Run dbt commands with Prefect 
-quarto-preview      Preview documentation locally with Quarto 
-quarto-publish-gh-pages Prepare Github Actions configuration for Quarto 
-quarto-render       Render documentation locally with Quarto 
-run-adhoc-query     Run ad-hoc SQL queries with DuckDB
+run-adhoc-query     Run ad-hoc SQL query 
+tests               Run unit tests on Prefect tasks and flows with PyTest
 ```
 
 To see a full list of the `make` rules, use

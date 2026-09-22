@@ -25,17 +25,29 @@ dbt-cmd:
 	@pixi run dbt-cmd "debug"
 .PHONY: dbt-cmd
 
+## Show active configuration settings for Prefect
+prefect-config-view:
+	@echo "+ $@"
+	@pixi run prefect-adhoc-command config view
+.PHONY: prefect-config-view
+
 ## Run dbt commands with Prefect
 prefect-dbt:
 	@echo "+ $@"
 	@pixi run prefect-dbt "debug,deps,run,test,docs generate"
 .PHONY: prefect-dbt
 
-## Run ad-hoc SQL queries with DuckDB
+## Run ad-hoc SQL query
 run-adhoc-query:
 	@echo "+ $@"
 	@pixi run adhocsql "analyses/check_parking_occupancy_records.sql"
 .PHONY: run-adhoc-query
+
+## Run unit tests on Prefect tasks and flows with PyTest
+tests:
+	@echo "+ $@"
+	@pixi run test
+.PHONY: tests
 
 ## Upgrade package versions with pixi
 pixi-upgrade:
@@ -48,24 +60,6 @@ pixi-help:
 	@echo "+ $@"
 	@pixi task list
 .PHONY: pixi-help
-
-## Preview documentation locally with Quarto
-quarto-preview:
-	@echo "+ $@"
-	@pixi run quarto-preview
-.PHONY: quarto-preview
-
-## Render documentation locally with Quarto
-quarto-render:
-	@echo "+ $@"
-	@pixi run quarto-render
-.PHONY: quarto-render
-
-## Prepare Github Actions configuration for Quarto
-quarto-publish-gh-pages:
-	@echo "+ $@"
-	@pixi run quarto-publish-gh-pages
-.PHONY: quarto-publish-gh-pages
 
 #################################################################################
 # Self Documenting Commands                                                     #

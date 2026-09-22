@@ -61,24 +61,6 @@ tox-help:
 	@tox list
 .PHONY: tox-help
 
-## Preview documentation locally with Quarto
-quarto-preview:
-	@echo "+ $@"
-	@tox run quarto -- preview --no-browser
-.PHONY: quarto-preview
-
-## Render documentation locally with Quarto
-quarto-render:
-	@echo "+ $@"
-	@tox run quarto -- render
-.PHONY: quarto-render
-
-## Prepare Github Actions configuration for Quarto
-quarto-publish-gh-pages:
-	@echo "+ $@"
-	@tox run quarto -- publish gh-pages
-.PHONY: quarto-publish-gh-pages
-
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################

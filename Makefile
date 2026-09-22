@@ -25,7 +25,7 @@ dbt-cmd:
 	@pixi run dbt-cmd "debug"
 .PHONY: dbt-cmd
 
-## Show Prefect's active configuration settings
+## Show active configuration settings for Prefect
 prefect-config-view:
 	@echo "+ $@"
 	@pixi run prefect-adhoc-command config view
@@ -60,24 +60,6 @@ pixi-help:
 	@echo "+ $@"
 	@pixi task list
 .PHONY: pixi-help
-
-## Preview documentation locally with Quarto
-quarto-preview:
-	@echo "+ $@"
-	@pixi run quarto-preview
-.PHONY: quarto-preview
-
-## Render documentation locally with Quarto
-quarto-render:
-	@echo "+ $@"
-	@pixi run quarto-render
-.PHONY: quarto-render
-
-## Prepare Github Actions configuration for Quarto
-quarto-publish-gh-pages:
-	@echo "+ $@"
-	@pixi run quarto-publish-gh-pages
-.PHONY: quarto-publish-gh-pages
 
 #################################################################################
 # Self Documenting Commands                                                     #
