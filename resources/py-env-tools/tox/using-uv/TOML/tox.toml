@@ -5,6 +5,7 @@ env_list = [
         [
             "dbt",
             "orchestration",
+            "prefectadhoccommand",
             "adhocsql",
             "unittests",
             "lint",
@@ -19,6 +20,7 @@ platform = "linux"
 base_python_file = [".python-version"]
 
 set_env.DBT_SEND_ANONYMOUS_USAGE_STATS = "False"
+set_env.DBT_PROFILES_DIR = "."
 
 pass_env = ["*"]
 
@@ -41,6 +43,9 @@ dependency_groups = [
         "dbt",
     ], extend = true },
     { replace = "if", condition = "factor.orchestration", then = [
+        "prefectdbt",
+    ], extend = true },
+    { replace = "if", condition = "factor.prefectadhoccommand", then = [
         "prefectdbt",
     ], extend = true },
     { replace = "if", condition = "factor.unittests", then = [
@@ -73,6 +78,13 @@ commands = [
             "python3",
             "dbt_orchestrator.py",
             "--commands",
+            { replace = "posargs", extend = true },
+        ],
+    ], extend = true },
+
+    { replace = "if", condition = "factor.prefectadhoccommand", then = [
+        [
+            "prefect",
             { replace = "posargs", extend = true },
         ],
     ], extend = true },

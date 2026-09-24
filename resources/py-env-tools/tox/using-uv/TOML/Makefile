@@ -6,6 +6,12 @@
 # COMMANDS                                                                      #
 #################################################################################
 
+
+
+#################################################################################
+# PROJECT RULES                                                                 #
+#################################################################################
+
 ## Run lint checks manually
 lint:
 	@echo "+ $@"
@@ -18,6 +24,12 @@ dbt-cmd:
 	@echo "+ $@"
 	@tox -e dbt -- "debug"
 .PHONY: dbt-cmd
+
+## Show active configuration settings for Prefect
+prefect-config-view:
+	@echo "+ $@"
+	@tox -e prefectadhoccommand -- config view
+.PHONY: prefect-config-view
 
 ## Run dbt commands with Prefect
 prefect-dbt:
@@ -37,6 +49,12 @@ tests:
 	@tox -e unittests
 .PHONY: tests
 
+## Install and Upgrade uv
+uv-install-upgrade:
+	@echo "+ $@"
+	@pip3 install --upgrade uv
+.PHONY: uv-install-upgrade
+
 ## Use uv to pin Python version for working directory only
 uv-pin-python:
 	@echo "+ $@"
@@ -55,23 +73,17 @@ uv-upgrade-tox:
 	@uv tool upgrade tox
 .PHONY: uv-upgrade-tox
 
+## Pin package versions in pyproject.toml with uv
+uv-lock:
+	@echo "+ $@"
+	@uv lock
+.PHONY: uv-lock
+
 ## Show all available tox commands
 tox-help:
 	@echo "+ $@"
 	@tox list
 .PHONY: tox-help
-
-## Install and Upgrade uv
-uv-install-upgrade:
-	@echo "+ $@"
-	@pip3 install --upgrade uv
-.PHONY: uv-install-upgrade
-
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
-
 
 #################################################################################
 # Self Documenting Commands                                                     #

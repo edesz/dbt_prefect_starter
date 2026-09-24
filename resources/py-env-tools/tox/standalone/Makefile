@@ -6,6 +6,12 @@
 # COMMANDS                                                                      #
 #################################################################################
 
+
+
+#################################################################################
+# PROJECT RULES                                                                 #
+#################################################################################
+
 ## Run lint checks manually
 lint:
 	@echo "+ $@"
@@ -18,6 +24,12 @@ dbt-cmd:
 	@echo "+ $@"
 	@tox -e py313-dbt -- "debug"
 .PHONY: dbt-cmd
+
+## Show active configuration settings for Prefect
+prefect-config-view:
+	@echo "+ $@"
+	@tox -e py313-prefect-adhoc-command -- config view
+.PHONY: prefect-config-view
 
 ## Run dbt commands with Prefect
 prefect-dbt:
@@ -36,6 +48,12 @@ tests:
 	@echo "+ $@"
 	@tox -e py313-unittests
 .PHONY: tests
+
+## Install and Upgrade uv
+uv-install-upgrade:
+	@echo "+ $@"
+	@pip3 install --upgrade uv
+.PHONY: uv-install-upgrade
 
 ## Use uv to pin Python version for working directory only
 uv-pin-python:
@@ -60,18 +78,6 @@ tox-help:
 	@echo "+ $@"
 	@tox list
 .PHONY: tox-help
-
-## Install and Upgrade uv
-uv-install-upgrade:
-	@echo "+ $@"
-	@pip3 install --upgrade uv
-.PHONY: uv-install-upgrade
-
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
-
 
 #################################################################################
 # Self Documenting Commands                                                     #

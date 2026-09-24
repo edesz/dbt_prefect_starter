@@ -10,6 +10,8 @@ The stack used is
 2. [DuckDB](https://duckdb.org/) is used as the (local) data warehouse
 3. [Pixi](https://pixi.prefix.dev/latest/) is used to handle Python virtual environments
 
+The project documentation is available here: https://edesz.github.io/dbt-prefect-starter-docs/
+
 ## Getting Started
 
 ### Pre-Requisites
@@ -22,7 +24,7 @@ The stack used is
 
 ### Prefect Cloud Connection Profile
 
-When using Prefect Cloud to execute flow runs, create and use a profile specifically for Cloud, which contains your `PREFECT_API_URL` and `PREFECT_API_KEY` in order to authenticate with the Prefect Cloud API using an API key.
+When using Prefect Cloud to execute flow runs, create and use a profile specifically for Cloud which contains your `PREFECT_API_URL` and `PREFECT_API_KEY` in order to authenticate with the Prefect Cloud API using an API key.
 
 First, get the [Prefect API settings from your Prefect Cloud account](https://docs.prefect.io/v3/how-to-guides/cloud/connect-to-cloud#manually-configure-prefect-api-settings) by following the steps below
 
@@ -42,7 +44,7 @@ First, get the [Prefect API settings from your Prefect Cloud account](https://do
    ```
 4. [Create a Prefect Cloud API key](https://docs.prefect.io/v3/how-to-guides/cloud/manage-users/api-keys#create-an-api-key)
    - go to the Prefect Cloud Login and sign in
-   - slick on your Profile Avatar or image in the bottom-left corner
+   - click on your Profile Avatar or image in the bottom-left corner
    - select *Settings* from the menu
    - click on API Keys in the settings sidebar
    - click the *+ Create API Key* (or *Generate API Key*) button
